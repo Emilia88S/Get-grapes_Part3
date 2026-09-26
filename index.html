@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duck's Magical Grape Quest - Part 3</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: black;
+        }
+
+        #game {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            color: white;
+            text-align: center;
+        }
+
+        .scene {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #town {
+            display: flex;
+            background: linear-gradient(#6ec6ff, #d7f5ff);
+        }
+
+        #desert {
+            background: linear-gradient(#f6c453, #e58b35);
+        }
+
+        #forest {
+            background: linear-gradient(#183d24, #07150c);
+        }
+
+        #cave {
+            background: radial-gradient(circle, #4b4b5c, #09090d);
+        }
+
+        .character {
+            font-size: 80px;
+            margin: 10px;
+        }
+
+        .title {
+            font-size: 60px;
+            font-weight: bold;
+            text-shadow: 4px 4px 5px black;
+            margin-bottom: 20px;
+        }
+
+        .dialogue {
+            width: 80%;
+            max-width: 850px;
+            padding: 20px;
+            border: 3px solid white;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.65);
+            font-size: 24px;
+            margin: 15px;
+        }
+
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            border: none;
+            border-radius: 12px;
+            font-size: 20px;
+            cursor: pointer;
+            background: #7c4dff;
+            color: white;
+        }
+
+        button:hover {
+            background: #9b75ff;
+        }
+
+        #blackScreen {
+            position: absolute;
+            inset: 0;
+            background: black;
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        #blackTitle {
+            font-size: 70px;
+            font-weight: bold;
+        }
+
+        .grape {
+            font-size: 100px;
+            cursor: pointer;
+            display: none;
+        }
+
+        #part4 {
+            position: absolute;
+            inset: 0;
+            background: black;
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 200;
+        }
+
+        #part4 h1 {
+            font-size: 100px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="game">
+
+    <!-- GRAPE TOWN -->
+    <div id="town" class="scene">
+
+        <div class="title">🍇 Grape Town 🍇</div>
+
+        <div class="character">🦆 🧙‍♂️ 👴</div>
+
+        <div class="dialogue" id="townDialogue">
+            The duck, the wizard, and the super strong wizard arrive at Grape Town...
+        </div>
+
+        <button onclick="nextTownDialogue()">Continue</button>
+
+    </div>
+
+
+    <!-- DESERT -->
+    <div id="desert" class="scene">
+
+        <div class="title">🏜️ Desert</div>
+
+        <div class="character">🦆 🧙‍♂️ 👴</div>
+
+        <div class="dialogue" id="desertDialogue">
+            The group arrives in the hot desert.
+            Somewhere here is one of the last magical grapes!
+        </div>
+
+        <div id="desertGrape" class="grape">🍇</div>
+
+        <button id="searchDesert" onclick="findDesertGrape()">
+            Search for the grape
+        </button>
+
+    </div>
+
+
+    <!-- SECRET FOREST -->
+    <div id="forest" class="scene">
+
+        <div class="title">🌲 Secret Forest</div>
+
+        <div class="character">🦆 🧙‍♂️ 👴</div>
+
+        <div class="dialogue" id="forestDialogue">
+            The wizard has teleported everyone to the Secret Forest.
+        </div>
+
+        <div id="forestGrape" class="grape">🍇</div>
+
+        <button id="searchForest" onclick="findForestGrape()">
+            Search the Secret Forest
+        </button>
+
+    </div>
+
+
+    <!-- UNKNOWN LOCATION -->
+    <div id="cave" class="scene">
+
+        <div class="title">❓ Unknown Location</div>
+
+        <div class="character">🦆 🧙‍♂️ 👴</div>
+
+        <div class="dialogue" id="caveDialogue">
+            The wizard has detected the unknown location of the last grape...
+        </div>
+
+        <div id="caveGrape" class="grape">🍇</div>
+
+        <button id="searchCave" onclick="findCaveGrape()">
+            Search the hidden cave
+        </button>
+
+    </div>
+
+
+    <!-- BLACK SCREEN -->
+    <div id="blackScreen">
+
+        <div id="blackTitle">
+            Desert
+        </div>
+
+    </div>
+
+
+    <!-- PART 4 YUMMY -->
+    <div id="part4">
+
+        <h1>PART 4 YUMMY</h1>
+
+        <p style="font-size: 30px;">
+            The adventure continues... 🍇
+        </p>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let townStep = 0;
+
+
+    // START
+    window.onload = function() {
+
+        document.getElementById("town").style.display = "flex";
+
+    };
+
+
+    // GRAPE TOWN
+    function nextTownDialogue() {
+
+        townStep++;
+
+        const dialogue =
+            document.getElementById("townDialogue");
+
+
+        if (townStep === 1) {
+
+            dialogue.innerHTML =
+                "🧙‍♂️ Wizard: Welcome to Grape Town! This town is famous for its magical grapes. There are grapes in the forest nearby too.";
+
+        }
+
+        else if (townStep === 2) {
+
+            dialogue.innerHTML =
+                "👨 Townsperson: You're here too late! A mysterious person stole our magical grapes... even the grapes from our forest!";
+
+        }
+
+        else if (townStep === 3) {
+
+            dialogue.innerHTML =
+                "👨 Townsperson: Only THREE magical grapes remain! One is in the desert, one is in the Secret Forest, and the last one... nobody knows where it is.";
+
+        }
+
+        else if (townStep === 4) {
+
+            dialogue.innerHTML =
+                "👴 Super Strong Wizard: Then we shall find them. We cannot allow the mysterious person to take the last three.";
+
+        }
+
+        else {
+
+            startTransition("Desert", startDesert);
+
+        }
+
+    }
+
+
+    // TRANSITION
+    function startTransition(title, nextScene) {
+
+        const blackScreen =
+            document.getElementById("blackScreen");
+
+        const blackTitle =
+            document.getElementById("blackTitle");
+
+        blackTitle.innerHTML = title;
+
+        blackScreen.style.display = "flex";
+
+
+        setTimeout(function() {
+
+            blackScreen.style.display = "none";
+
+            document.querySelectorAll(".scene").forEach(scene => {
+                scene.style.display = "none";
+            });
+
+            nextScene();
+
+        }, 3000);
+
+    }
+
+
+    // DESERT
+    function startDesert() {
+
+        document.getElementById("desert").style.display = "flex";
+
+    }
+
+
+    function findDesertGrape() {
+
+        const dialogue =
+            document.getElementById("desertDialogue");
+
+        const grape =
+            document.getElementById("desertGrape");
+
+        const button =
+            document.getElementById("searchDesert");
+
+
+        dialogue.innerHTML =
+            "🦆 Duck: QUACK! I found something underneath the sand!";
+
+        grape.style.display = "block";
+
+        button.innerHTML = "Collect the grape";
+
+
+        button.onclick = function() {
+
+            dialogue.innerHTML =
+                "🍇 You found the first remaining magical grape!";
+
+            grape.innerHTML = "🍇✨";
+
+            button.innerHTML = "Continue";
+
+
+            button.onclick = function() {
+
+                startTransition(
+                    "Secret Forest",
+                    startForest
+                );
+
+            };
+
+        };
+
+    }
+
+
+    // SECRET FOREST
+    function startForest() {
+
+        document.getElementById("forest").style.display = "flex";
+
+    }
+
+
+    function findForestGrape() {
+
+        const dialogue =
+            document.getElementById("forestDialogue");
+
+        const grape =
+            document.getElementById("forestGrape");
+
+        const button =
+            document.getElementById("searchForest");
+
+
+        dialogue.innerHTML =
+            "🌲 The group searches through the mysterious trees...";
+
+
+        setTimeout(function() {
+
+            grape.style.display = "block";
+
+            dialogue.innerHTML =
+                "🦆 Duck: QUACK! There it is! Another magical grape!";
+
+            button.innerHTML = "Collect the grape";
+
+
+            button.onclick = function() {
+
+                dialogue.innerHTML =
+                    "🍇 You found the second remaining magical grape!";
+
+                grape.innerHTML = "🍇✨";
+
+                button.innerHTML = "Continue";
+
+
+                button.onclick = function() {
+
+                    wizardDetectsFinalGrape();
+
+                };
+
+            };
+
+        }, 1500);
+
+    }
+
+
+    // WIZARD DETECTS FINAL GRAPE
+    function wizardDetectsFinalGrape() {
+
+        const dialogue =
+            document.getElementById("forestDialogue");
+
+        const button =
+            document.getElementById("searchForest");
+
+
+        dialogue.innerHTML =
+            "🧙‍♂️ Wizard: I have detected the unknown location of the last grape.";
+
+
+        button.innerHTML =
+            "Teleport to the unknown location";
+
+
+        button.onclick = function() {
+
+            startTransition(
+                "Unknown Location",
+                startCave
+            );
+
+        };
+
+    }
+
+
+    // SECRET CAVE
+    function startCave() {
+
+        document.getElementById("cave").style.display = "flex";
+
+    }
+
+
+    function findCaveGrape() {
+
+        const dialogue =
+            document.getElementById("caveDialogue");
+
+        const grape =
+            document.getElementById("caveGrape");
+
+        const button =
+            document.getElementById("searchCave");
+
+
+        dialogue.innerHTML =
+            "🦆 The duck enters a dark hidden cave...";
+
+
+        setTimeout(function() {
+
+            grape.style.display = "block";
+
+            dialogue.innerHTML =
+                "✨ The final magical grape is glowing deep inside the cave!";
+
+            button.innerHTML =
+                "Take the final grape";
+
+
+            button.onclick = function() {
+
+                dialogue.innerHTML =
+                    "🍇 YOU FOUND THE LAST MAGICAL GRAPE!";
+
+                grape.innerHTML =
+                    "🍇✨🌟";
+
+                button.innerHTML =
+                    "Finish Part 3";
+
+
+                button.onclick = function() {
+
+                    finishPart3();
+
+                };
+
+            };
+
+        }, 1500);
+
+    }
+
+
+    // END OF PART 3
+    function finishPart3() {
+
+        const blackScreen =
+            document.getElementById("blackScreen");
+
+
+        blackScreen.style.display = "flex";
+
+        document.getElementById("blackTitle").innerHTML = "";
+
+
+        setTimeout(function() {
+
+            blackScreen.style.display = "none";
+
+            document.getElementById("part4").style.display = "flex";
+
+        }, 3000);
+
+    }
+
+</script>
+
+</body>
+</html>
